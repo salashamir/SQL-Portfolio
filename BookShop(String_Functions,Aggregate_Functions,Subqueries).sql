@@ -66,3 +66,63 @@ SELECT DISTINCT CONCAT(title, " - ", released_year) AS book_summ, released_year
 FROM books
 ORDER BY released_year DESC
 LIMIT 5;
+
+-- Use limit to get a subset in between
+SELECT title, released_year FROM books 
+ORDER BY released_year DESC LIMIT 10,2;
+
+-- Get titles amtching a wildcard character
+SELECT title, author_fname, author_lname, pages 
+FROM books
+WHERE title LIKE '%:%';
+
+-- To select books with '%' in their title:
+SELECT * FROM books
+WHERE title LIKE '%\%%';
+ 
+-- To select books with an underscore '_' in title:
+SELECT * FROM books
+WHERE title LIKE '%\_%';
+
+-- AGGREGATE FUNCTIONS
+-- Find the earliest and latest releases and max page count for authors
+SELECT 
+	author_lname, 
+    author_fname,
+	COUNT(*) as books_written, 
+	MAX(released_year) AS latest_release,
+	MIN(released_year)  AS earliest_release
+FROM books GROUP BY author_lname, author_fname;
+
+-- find average stock quantity by year 
+SELECT 
+    released_year, 
+    AVG(stock_quantity), 
+    COUNT(*) FROM books
+GROUP BY released_year;
+
+-- Get full name of author w longest book using a subquery
+SELECT 
+    CONCAT(author_fname, ' ', author_lname) AS author, pages 
+FROM books
+WHERE pages = (SELECT MAX(pages) FROM books);
+
+-- find count of books for each year and average pages for release years
+
+SELECT 
+    released_year AS year,
+    COUNT(*) AS '# books',
+    AVG(pages) AS 'avg pages'
+FROM books
+GROUP BY released_year
+ORDER BY released_year;
+
+-- Get author first name and last name with a generatd column summary of how many books they have
+SELECT author_fname, author_lname,
+	CASE
+        WHEN COUNT(*) = 1 THEN '1 book'
+        ELSE CONCAT(COUNT(*), ' books')
+	END AS count
+FROM books
+WHERE author_lname IS NOT NULL
+GROUP BY author_fname, author_lname;

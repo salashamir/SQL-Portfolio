@@ -130,6 +130,14 @@ SELECT first_name AS forename, last_name AS surname FROM employee LIMIT 5;
 -- Find diff branch ids in emp table
 SELECT DISTINCT branch_id FROM employee;
 
--- Find the number of female employees born after 1970
+-- Find how many employees have supervisors
+SELECT COUNT(super_id) FROM employee;
 
+-- Find female employees born after 1970
+SELECT COUNT(emp_id) FROM employee WHERE sex = 'F' AND birth_date > '1971-01-01';
 
+-- Find number of female and male employees
+SELECT COUNT(sex), sex FROM employee GROUP BY sex;
+
+-- Find total sales of each salesman
+SELECT SUM(total_sales), emp_id FROM works_with GROUP BY emp_id;
